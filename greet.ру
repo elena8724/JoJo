@@ -1,0 +1,119 @@
+import os
+
+def read_all_users():
+    """Чтение всех пользователей из README.md"""
+    users = []
+    try:
+        with open('README.md', 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            
+            # Читаем данные блоками по 8 строк (один пользователь)
+            for i in range(0, len(lines), 8):
+                if i + 7 < len(lines):
+                    user_data = {
+                        'last_name': lines[i].strip(),
+                        'first_name': lines[i+1].strip(),
+                        'patronymic': lines[i+2].strip(),
+                        'group': lines[i+3].strip(),
+                        'specialty': lines[i+4].strip(),
+                        'code': lines[i+5].strip(),
+                        'practice': lines[i+6].strip(),
+                        'number': lines[i+7].strip() if i+7 < len(lines) else ''
+                    }
+                    users.append(user_data)
+    except FileNotFoundError:
+        pass
+    return users
+
+def find_user_by_name(users, first_name, last_name):
+    """Поиск пользователя по имени и фамилии"""
+    for user in users:
+        if user['first_name'].lower() == first_name.lower() and user['last_name'].lower() == last_name.lower():
+            return user
+    return None
+
+def write_users_to_file(users):
+    """Запись всех пользователей в README.md"""
+    with open('README.md', 'w', encoding='utf-8') as file:
+        for user in users:
+            file.write(f"{user['last_name']}\n")
+            file.write(f"{user['first_name']}\n")
+            file.write(f"{user['patronymic']}\n")
+            file.write(f"{user['group']}\n")
+            file.write(f"{user['specialty']}\n")
+            file.write(f"{user['code']}\n")
+            file.write(f"{user['practice']}\n")
+            file.write(f"{user['number']}\n\n")
+
+def get_user_input():
+    """Получение данных от пользователя"""
+    print("\nПользователь не найден. Давайте зарегистрируем вас!")
+    
+    last_name = input("Фамилия: ").strip()
+    first_name = input("Имя: ").strip()
+    patronymic = input("Отчество: ").strip()
+    group = input("Группа: ").strip()
+    specialty = input("Специальность: ").strip()
+    code = input("Код: ").strip()
+    practice = input("Практика: ").strip()
+    number = input("Номер: ").strip()
+    
+    return {
+        'last_name': last_name,
+        'first_name': first_name,
+        'patronymic': patronymic,
+        'group': group,
+        'specialty': specialty,
+        'code': code,
+        'practice': practice,
+        'number': number
+    }
+
+def greet_user(user_data):
+    """Приветствие пользователя"""
+    print(f"\n=== ДОБРО ПОЖАЛОВАТЬ! ===")
+    print(f"Здравствуйте, {user_data['first_name']} {user_data['patronymic']}!")
+    print(f"Фамилия: {user_data['last_name']}")
+    print(f"Имя: {user_data['first_name']}")
+    print(f"Отчество: {user_data['patronymic']}")
+    print(f"Группа: {user_data['group']}")
+    print(f"Специальность: {user_data['specialty']}")
+    print(f"Код: {user_data['code']}")
+    print(f"Практика: {user_data['practice']}")
+    print(f"Номер: {user_data['number']}")
+    print("=" * 25)
+
+def main():
+    """Основная функция программы"""
+    print("=== СИСТЕМА ПРИВЕТСТВИЯ ===")
+    
+    # Запрашиваем имя пользователя
+    search_first_name = input("Введите ваше имя: ").strip()
+    search_last_name = input("Введите вашу фамилию: ").strip()
+    
+    # Читаем всех пользователей из файла
+    all_users = read_all_users()
+    
+    # Ищем пользователя
+    user = find_user_by_name(all_users, search_first_name, search_last_name)
+    
+    if user:
+        # Если пользователь найден - приветствуем
+        greet_user(user)
+    else:
+        # Если пользователь не найден - регистрируем
+        print(f"\nПользователь {search_first_name} {search_last_name} не найден.")
+        new_user = get_user_input()
+        
+        # Добавляем нового пользователя в список
+        all_users.append(new_user)
+        
+        # Сохраняем всех пользователей в файл
+        write_users_to_file(all_users)
+        
+        print(f"\n✅ Регистрация завершена! Данные сохранены в README.md")
+        greet_user(new_user)
+
+# Запуск программы
+if __name__ == "__main__":
+    main()

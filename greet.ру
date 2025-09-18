@@ -90,13 +90,11 @@ def main():
     # Запрашиваем имя пользователя
     search_first_name = input("Введите ваше имя: ").strip()
     search_last_name = input("Введите вашу фамилию: ").strip()
-    
     # Читаем всех пользователей из файла
     all_users = read_all_users()
     
     # Ищем пользователя
     user = find_user_by_name(all_users, search_first_name, search_last_name)
-    
     if user:
         # Если пользователь найден - приветствуем
         greet_user(user)
@@ -113,6 +111,9 @@ def main():
         
         print(f"\n✅ Регистрация завершена! Данные сохранены в README.md")
         greet_user(new_user)
+
+
+
 
 # Запуск программы
 if __name__ == "__main__":
